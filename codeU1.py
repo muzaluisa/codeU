@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 """
+Created on Fri May 19 15:10:45 2017
+
+@author: Luiza
+"""
+
+# -*- coding: utf-8 -*-
+"""
 Created on Thu May 18 10:12:38 2017
 CodeU exercise 1
 @author: Luiza
@@ -33,14 +40,14 @@ def is_permutation(str1,str2):
         print yes
         return 1;
         
-    
-is_permutation("permutation","")
-is_permutation("permutation","tionpermuta")
-is_permutation("_*","*_")
-is_permutation("  ","  ")
+def test_permutation():    
+   is_permutation("permutation","")
+   is_permutation("permutation","tionpermuta")
+   is_permutation("_*","*_")
+   is_permutation("  ","  ")
 
- # Tast 2: Implement an algorithm to find the kth to last element of a singly linked list  
-   
+ # Task 2: Implement an algorithm to find the kth to last element of a singly linked list  
+ 
       
 class Node:
     def __init__(self,value):
@@ -53,7 +60,7 @@ class LinkedList:
         self.head = None;
         self.N = 0
 
-    def k_last(self,k):
+    def get_kth_last_element(self,k):
         if k > self.N-1:
             print 'There are ' + str(self.N) + ' elements, k should be less than N';
             return None;
@@ -87,17 +94,25 @@ class LinkedList:
         print '\n'
         return;    
         
-def k_last_element(x,k):
-    print str(k) + 'th last element is ' + str(ll.k_last(k))     
+#def k_last_element(x,k):
+#    print str(k) + 'th last element is ' + str(ll.k_last(k))     
 
-x = [0,1,2,3]
-ll = LinkedList();
-for a in x:
-    ll.insert(a)
-print '\nList:'
-ll.print_list()
-    
-k_last_element(ll,0)
-k_last_element(ll,1)
-k_last_element(ll,4)
+def test_list():      
+   x = [0,1,2,3]
+   ll = LinkedList();
+   for a in x:
+       ll.insert(a)
+   print 'List:'
+   ll.print_list()
+
+   print '0th last element is ' + str(ll.get_kth_last_element(0))
+   print '1th last element is ' + str(ll.get_kth_last_element(1))
+   print '2th last element is ' + str(ll.get_kth_last_element(4))
+
+
+print "="*25 + '\n Test singly-linked list \n' + "="*25
+test_list()
+
+print "\n" + "="*25 + '\n Test permutation \n' + "="*25
+test_permutation()
     
