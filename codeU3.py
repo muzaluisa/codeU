@@ -9,9 +9,9 @@ from collections import deque
 import unittest
 import numpy as np
 
-def find_prefixes(word):
+def getPrefixes(word):
 
-    '''Returns the list of prefixes of given word
+    '''Returns the list of all prefixes of given word
     including the word itself
     '''
 
@@ -19,7 +19,9 @@ def find_prefixes(word):
 
 class Dictionary(object):
 
-    '''Stores lower-case vocabulary and all its prefixes
+    '''Stores lower-case vocabulary and all its prefixes as a set
+    Two functions isWord and isPrefix are defined to check if given word/prefix is found
+    Constructor needs only a non-empty word-list, prefixes found automatically
     '''
 
     def __init__(self, word_list):
@@ -30,7 +32,7 @@ class Dictionary(object):
         self.words = set(word_list)
         self.word_prefixes = set()
         for word in self.words:
-            self.word_prefixes.update(find_prefixes(word))
+            self.word_prefixes.update(getPrefixes(word))
 
     def isWord(self, word):
 
@@ -40,7 +42,7 @@ class Dictionary(object):
 
         if not isinstance(word, str):
             assert TypeError, 'Input should be a string'
-            return
+            return False
         if word.lower() in self.words:
             return True
         return False
@@ -87,28 +89,36 @@ class TestDictionary(unittest.TestCase):
 
 class CharGrid(object):
 
-    '''Given(n by m) grid of letters and a dictionary
+    '''Given (n by m) grid of letters and a dictionary
     Return all possible words from dictionary that can be formed by traversing
     the grid cells without visiting the same cell twice
     '''
 
-    def __init__(self, char_arr, words):
-        char_arr_fl = char_arr.flatten()
-        for c in char_arr_fl:
+    def __init__(self, char_matrix, word_list):
+        
+        '''Given char_matrix as 2D numpy array and a list of words
+        Checks whether we have a proper matrix and character values in it
+        and saves them along with matrix shape as attributes
+        '''
+        
+        char_array = char_matrix.flatten() # flattening for checking matrix shape correctness
+        for c in char_array:
             if isinstance(c, list):
                 assert TypeError, 'Please provide matrix type of data'
                 return
             if not c.isalpha() or len(c) > 1:
                 assert TypeError, 'Please provide grid values with only char entries'
                 return
-        self.grid = char_arr
-        self.dict = Dictionary(words)
-        (self.m, self.n) = np.shape(char_arr)
+        self.grid = char_matrix
+        self.dict = Dictionary(word_list)
+        (self.m, self.n) = np.shape(char_matrix)
 
     def is_route_prefix(self, route):
 
         '''Given a list of tuple coordinates (x,y) encoding route
-        Returns True if route gives string that is a prefix in our dictionary
+        Returns:
+            True: if route gives string that is a prefix in our dictionary
+            False: otherwise
         '''
 
         if not route:
@@ -122,8 +132,9 @@ class CharGrid(object):
     def route_word(self, route):
 
         '''Given a list of tuple coordinates (x,y) encoding route
-        Returns empty string if corresponding string is not in the dictionary
-        and word otherwise
+        Returns:
+            empty string, if corresponding string is not in the dictionary
+            word, otherwise
         '''
 
         if not route:
@@ -137,7 +148,9 @@ class CharGrid(object):
     def route_extend(self, route):
 
         '''Given a route as list of (x,y) indices
-        Returns all possible routes 1 step made in one of 8 directions
+        Returns:
+            all possible routes where 1 step made in one of 8 directions
+            each route is a list of tuple coordinates 
         '''
 
         last_x = route[-1][0] #last route coordinate x
@@ -145,7 +158,7 @@ class CharGrid(object):
         cells_set = set(route)
         route_extended = []
 
-        if last_x + 1 < self.m and (last_x + 1, last_y) not in cells_set:
+        if last_x + 1 < self.m and (last_x + 1, last_y) not in cells_set: #ensure we don't visit the same cell twice
             route_extended.append(route + [(last_x + 1, last_y)])
         if last_x + 1 < self.m and last_y + 1 < self.n and (last_x + 1, last_y + 1) not in cells_set:
             route_extended.append(route + [(last_x + 1, last_y + 1)])
@@ -167,13 +180,14 @@ class CharGrid(object):
     def search_words(self):
 
         '''Return all words found in the grid from given dictionary
+        Optimized by stopping searching longer route than maximum length of the dictionary word
         '''
 
         all_cells = [[(i, j)] for i in range(self.m) for j in range(self.n)]
         routes = deque(all_cells)
         words_found = set()
         while routes:
-            route = routes.popleft()
+            route = routes.popleft() #queue functionality
             if self.is_route_prefix(route):
                 word = self.route_word(route)
                 if word:
