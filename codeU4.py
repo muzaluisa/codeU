@@ -27,9 +27,9 @@ class Tile(object):
         '''
 
         (self.rows, self.cols) = np.shape(bool_matrix)
+        if self.cols != cols or self.rows != rows:
+            assert ValueError, "Given matrix dimensions mismatch between the actual size of array"
         self.tile = bool_matrix
-        assert self.rows == rows or self.cols == cols, \
-        "Given matrix dimensions mismatch between the actual size of array"
         self.num_islands = 0
         self.unvisited_land_cells = set((i, j) for i in range(self.rows) \
         for j in range(self.cols) if self.tile[i, j])
@@ -45,9 +45,9 @@ class Tile(object):
             True: if not visited land
             False: otherwise
         """
-
-        return (0 <= tuple_cell[0] < self.rows and 0 <= tuple_cell[1] < self.cols \
-        and (tuple_cell[0], tuple_cell[1]) in self.unvisited_land_cells)
+        
+        is_within_bounds = (0 <= tuple_cell[0] < self.rows and 0 <= tuple_cell[1] < self.cols)
+        return is_within_bounds and ((tuple_cell[0], tuple_cell[1]) in self.unvisited_land_cells)
 
 
     def get_land_neighbours(self, cell):
