@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+# Revised 1st version
+
 from collections import defaultdict
 import numpy as np
 import unittest
@@ -20,25 +22,24 @@ class Alphabet:
         '''
         
         self.words = word_list
-        self.partial_order = [] # a list of partial order lists [char1,char2], char1 < char2
+        self.partial_order = set() # a list of partial order lists [char1,char2], char1 < char2
         self.all_chars = set() # unordered set of all characters
         self.sorted_alphabet = [] # the list of characters in the alphabetical order
         for word in self.words:
             self.all_chars.update(set(word))
+        self.unmarked = self.all_chars # used in top-sort, nodes which order is not yet determinded
+        self.temp_marked = set() # used in top-sort for marking visited nodes
+        
         self.neigh_dict = defaultdict(list) # dictionary of char: [list of chars going after the given char] 
         
     def find_common_prefix(self, word1, word2):
-        
-        if len(word1) < len(word2):
-            word_shorter = word1
-            word_longer = word2
-        else:
-            word_longer = word1
-            word_shorter = word2
-            
-        for i, c in enumerate(word_shorter):
-            if c != word_longer[i]:
-                return word_shorter[:i]
+
+        prefix = ''    
+        for c1, c2 in zip(word1,word2):
+            if c1 != c2:
+                return prefix
+            else:
+                prefix+=c1
     
     def find_partial_order(self, word1, word2):
         
@@ -50,7 +51,7 @@ class Alphabet:
         prefix = self.find_common_prefix(word1, word2)
         char_first = word1[len(prefix)]
         char_next = word2[len(prefix)]
-        return [char_first, char_next]
+        return (char_first, char_next)
     
     def find_all_partial_orders(self):
         
@@ -63,22 +64,16 @@ class Alphabet:
             # if one word is contained in the other, then we can not infer the partial order
             if self.words[i] in self.words[i+1] or self.words[i+1] in self.words[i]:
                 continue    
-            [char_prev, char_next] = self.find_partial_order(self.words[i], self.words[i+1])
-            self.partial_order.append([char_prev, char_next])
-        return self.partial_order 
-    
-    def find_neighbours(self):
-        
-        '''Creates a dictionary 
-        with key as a char and value being as a list of chars
-        that go next in the alphabetical order
-        '''
-        
-        for [char_prev, char_next] in self.partial_order:
+            char_prev, char_next = self.find_partial_order(self.words[i], self.words[i+1])
+            self.partial_order.add((char_prev, char_next))
+            
+        for char_prev, char_next in self.partial_order:
             if char_prev not in self.neigh_dict:
                 self.neigh_dict[char_prev] = [char_next]
             else:
-                self.neigh_dict[char_prev]+= [char_next]
+                self.neigh_dict[char_prev]+= [char_next] 
+                
+        return self.partial_order 
     
     def topological_sort(self):
         
@@ -87,17 +82,18 @@ class Alphabet:
         Returns:
             sorted alphabet 
         '''
-        
+        self.partial_order = set()
+        self.neigh_dict = defaultdict(list)
         self.find_all_partial_orders()
-        self.find_neighbours()
-        self.temp_marked = set()
-        self.unmarked = self.all_chars
-        unmarked = self.unmarked.copy()
-        for node in unmarked:
+        for node in self.unmarked.copy():
             self.visit_node(node)
         return self.sorted_alphabet    
             
-    def visit_node(self,node):
+    def visit_node(self, node):
+        assert node not in self.temp_marked, "Provided order of words is wrong, character " \
+            + str(node) + " order can not be determined correctly! "
+        
+        #assert node in self.temp_marked, 
         if node not in self.unmarked:
             return
         self.temp_marked.add(node)
@@ -107,15 +103,15 @@ class Alphabet:
         self.temp_marked.remove(node)
         self.sorted_alphabet.insert(0, node)
    
-class TestAlhabet(unittest.TestCase):
+class TestAlphabet(unittest.TestCase):
 
     def setUp(self):
         word_list = ['ART', 'RAT', 'CAT', 'CAR']
         self.a = Alphabet(word_list)
 
     def test_partial_order(self):
-        partial_order_list = self.a.find_all_partial_orders()
-        self.assertEqual(partial_order_list, [['A', 'R'], ['R', 'C'], ['T', 'R']])
+        partial_order_set = self.a.find_all_partial_orders()
+        self.assertEqual(partial_order_set, {('A', 'R'), ('R', 'C'), ('T', 'R')})
 
     def test_alphabet_order(self):
         right_answer1 = ['T', 'A', 'R', 'C']
