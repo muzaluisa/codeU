@@ -57,7 +57,7 @@ class RearrangeCars(object):
         self.empty_spot_position = self.current_car_order.index(0)
         self.print_console = True
         self.car_position_dict = {car:pos for pos, car in enumerate(init_car_order) \
-                                  if car != 0} #search the index of car in O(1) via dict
+                                  if car} #search the index of car in O(1) via dict
         self.min_num_steps_left = None
 
     def print_one_step(self, from_idx):
@@ -110,10 +110,9 @@ class RearrangeCars(object):
         '''
 
         index = 0
-        while self.current_car_order[index] == self.final_car_order[index]:
+        while (self.current_car_order[index] == self.final_car_order[index]) or \
+                                        (index == self.empty_spot_position):
             index += 1
-            if index == self.empty_spot_position:
-                index += 1
 
         return index
 
@@ -147,7 +146,7 @@ class RearrangeCars(object):
         self.current_car_order = self.initial_car_order
         self.empty_spot_position = self.current_car_order.index(0)
         self.car_position_dict = {car:pos for pos, car in \
-                                  enumerate(self.initial_car_order) if car != 0}
+                                  enumerate(self.initial_car_order) if car}
 
     def get_min_num_moves(self):
 
