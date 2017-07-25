@@ -87,13 +87,12 @@ class RearrangeCars(object):
 
     def create_log_file(self):
 
-        '''In case the number of moves is more than 100
+        '''In case the number of moves is more than 1000
         writes the output to the logfile instead of the console
         '''
         
         num_cars = len(self.not_arranged_cars)
-        info_message = 'Number of cars to arrange is {0} > 1000, \
-                        movements are logged'.format(num_cars)
+        info_message = 'Number of cars to arrange is {0} > 1000, movements are logged'.format(num_cars)
         logging_message = info_message
         logging.warning(logging_message)
         logging.info('Initial car order:')
