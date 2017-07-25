@@ -77,9 +77,8 @@ class RearrangeCars(object):
         writes the output to the logfile instead of the console
         '''
 
-        logging.warning('Since the number of cars to arrange is {0} and more than 1000 \
-                        , the output with movements will be logged to the file \
-                        '.format(len(self.initial_car_order)))
+        logging.warning('Since the number of cars to arrange is {0} and more than 1000, the output\
+                            with movements will be logged to the file'.format(len(self.initial_car_order)))
         logging.info('Initial car order:')
         logging.info(self.initial_car_order)
         logging.info('Final car order:')
@@ -169,8 +168,7 @@ class RearrangeCars(object):
         '''
 
         if self.initial_car_order == self.final_car_order:
-            assert ValueError, 'Cars are already in the final order, \
-            no moves are required'
+            assert ValueError, 'Cars are already in the final order, no moves are required'
         elif self.current_car_order == self.final_car_order:
             self.reset_variables_to_init_state()
 
