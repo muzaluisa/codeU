@@ -77,8 +77,8 @@ class RearrangeCars(object):
         writes the output to the logfile instead of the console
         '''
 
-        logging.warning('Since the number of cars to arrange is {0} and more than 1000\
-                        , the output with movements will be logged to the file\
+        logging.warning('Since the number of cars to arrange is {0} and more than 1000 \
+                        , the output with movements will be logged to the file \
                         '.format(len(self.initial_car_order)))
         logging.info('Initial car order:')
         logging.info(self.initial_car_order)
