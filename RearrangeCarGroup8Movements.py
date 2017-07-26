@@ -45,8 +45,9 @@ class RearrangeCars(object):
        - Stores additionally the position of empty spot in current car arrangement
        self.current_car_order.
        - Moves are either printed to the console or logged
-       - Stores and updates min_num_steps_left that shows min number of moves left
-        in order to avoid comparison current and final order lists that takes O(n)
+       - Print moves in O(n), where n is the number of cars. 
+       - More precisely at most n + k moves are taken, where k << n is the amount of movements
+       - where car is placed not to the final place
     '''
 
     def __init__(self, init_car_order, final_car_order):
@@ -88,10 +89,9 @@ class RearrangeCars(object):
         
         info_message = 'Number moves is {0} > 1000, logging them..'.format(len(moves_list))
         print info_message
-        logging.info('Initial car order:')
-        logging.info(self.initial_car_order)
-        logging.info('Final car order:')
-        logging.info(self.final_car_order)
+        logging.basicConfig(filename='RearrangeCarGroup8.log', filemode='w', level=logging.DEBUG)
+        logging.info('Initial car order:', self.initial_car_order)
+        logging.info('Final car order:', self.final_car_order)
         logging.info('Moves:')
         for move in moves_list:
             logging.info(move.__str__())   
