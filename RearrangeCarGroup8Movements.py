@@ -78,19 +78,19 @@ class RearrangeCars(object):
         self.initial_car_order = init_car_order
         self.current_car_order = init_car_order
         self.final_car_order = final_car_order
-        self.empty_spot_position = self.current_car_order.index(0)
+        self.empty_position = self.current_car_order.index(0)
         self.print_console = True
         self.car_position_dict = {car:pos for pos, car in enumerate(init_car_order) \
                                   if car} #search the index of car in O(1) via dict
         self.not_arranged_cars = {car for i, car in enumerate(init_car_order)\
                                   if init_car_order[i] != final_car_order[i] and car}
 
-    def create_log_file(self):
+    def _create_log_file(self):
 
         '''In case the number of moves is more than 1000
         writes the output to the logfile instead of the console
         '''
-        
+
         num_cars = len(self.not_arranged_cars)
         info_message = 'Number of cars to arrange is {0} > 1000, movements are logged'.format(num_cars)
         logging_message = info_message
@@ -101,7 +101,7 @@ class RearrangeCars(object):
         logging.info(self.final_car_order)
         logging.info('Moves:')
 
-    def move_car_to_empty_slot(self, car_to_move_position):
+    def _move_car_to_empty_slot(self, car_to_move_position):
 
         '''Arranges the car with car_to_move_position index to the empty slot
         Arguments:
@@ -111,13 +111,13 @@ class RearrangeCars(object):
         '''
 
         car_to_move = self.current_car_order[car_to_move_position]
-        self.current_car_order[self.empty_spot_position] = car_to_move
+        self.current_car_order[self.empty_position] = car_to_move
         self.current_car_order[car_to_move_position] = 0
 
-        self.car_position_dict[car_to_move] = self.empty_spot_position
-        self.empty_spot_position = car_to_move_position
+        self.car_position_dict[car_to_move] = self.empty_position
+        self.empty_position = car_to_move_position
 
-    def get_not_arranged_car_index(self):
+    def _get_not_arranged_car_index(self):
 
         '''Finds first car index not yet standing on the final destination
         '''
@@ -125,7 +125,7 @@ class RearrangeCars(object):
         car = random.choice(tuple(self.not_arranged_cars)) # O(1)
         return self.car_position_dict[car]
 
-    def rearrange_one_car(self):
+    def _rearrange_one_car(self):
 
         '''Puts to the current empty space the car
         that should be on this place according to the final arrangement
@@ -134,35 +134,35 @@ class RearrangeCars(object):
 
         Otherwise picks up the random not arranged car and places it to the empty space
         in this case the number of not arranged cars stays the same
-        
+
         Complexity is O(1)
         '''
 
-        if self.final_car_order[self.empty_spot_position] == 0:
-            car_to_move_position = self.get_not_arranged_car_index()
+        if self.final_car_order[self.empty_position] == 0:
+            car_to_move_position = self._get_not_arranged_car_index()
             car_to_move = self.current_car_order[car_to_move_position]
         else:
-            car_to_move = self.final_car_order[self.empty_spot_position]
+            car_to_move = self.final_car_order[self.empty_position]
             car_to_move_position = self.car_position_dict[car_to_move]
             self.not_arranged_cars.difference_update([car_to_move]) # O(1)
 
 
-        movement = Movement(car_to_move, car_to_move_position, self.empty_spot_position)
+        movement = Movement(car_to_move, car_to_move_position, self.empty_position)
         if self.print_console:
             print movement
         else:
             movement.print_log_file()
 
-        self.move_car_to_empty_slot(car_to_move_position)
+        self._move_car_to_empty_slot(car_to_move_position)
 
-    def reset_variables_to_init_state(self):
+    def _reset_variables_to_init_state(self):
 
         '''Resets variables to the same state when class was initialized
         Needed for running rearrange_all_cars function again
         '''
 
         self.current_car_order = self.initial_car_order
-        self.empty_spot_position = self.current_car_order.index(0)
+        self.empty_position = self.current_car_order.index(0)
         self.car_position_dict = {car:pos for pos, car in \
                                   enumerate(self.initial_car_order) if car} # time O(n)
         self.not_arranged_cars = {car for i, car in enumerate(self.initial_car_order)\
@@ -181,15 +181,15 @@ class RearrangeCars(object):
         if self.initial_car_order == self.final_car_order:
             assert ValueError, 'Cars are already in the final order, no moves are required'
         elif self.current_car_order == self.final_car_order:
-            self.reset_variables_to_init_state()
+            self._reset_variables_to_init_state()
 
         if len(self.not_arranged_cars) > 1000:
-            self.create_log_file()
+            self._create_log_file()
             self.print_console = False
 
         '''Final solution is O(n)
         '''
 
         while self.not_arranged_cars:
-            self.rearrange_one_car() # O(1)
-            
+            self._rearrange_one_car() # O(1)
+
