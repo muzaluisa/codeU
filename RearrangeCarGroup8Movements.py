@@ -38,10 +38,6 @@ class Movement(object):
         move_str = "Move car #%s from %s to %s" %(self.car, self.from_index, self.to_index)
         return move_str
 
-    def print_log_file(self):
-        move_str = "Move car #%s from %s to %s" %(self.car, self.from_index, self.to_index)
-        logging.info(move_str)
-
 class RearrangeCars(object):
 
     '''Class to rearrange the cars and print the moves
@@ -76,30 +72,49 @@ class RearrangeCars(object):
         '''
 
         self.initial_car_order = init_car_order
-        self.current_car_order = init_car_order
         self.final_car_order = final_car_order
-        self.empty_position = self.current_car_order.index(0)
         self.print_console = True
-        self.car_position_dict = {car:pos for pos, car in enumerate(init_car_order) \
-                                  if car} #search the index of car in O(1) via dict
-        self.not_arranged_cars = {car for i, car in enumerate(init_car_order)\
-                                  if init_car_order[i] != final_car_order[i] and car}
+        self._variables_to_init_state()
 
-    def _create_log_file(self):
+    def print_moves_log_file(self, moves_list):
 
-        '''In case the number of moves is more than 1000
-        writes the output to the logfile instead of the console
+        '''Prints a list of moves to the log file
+        
+        Arguments:
+            moves: a list of Movement class instances
+        Returns:
+            None
         '''
-
-        num_cars = len(self.not_arranged_cars)
-        info_message = 'Number of cars to arrange is {0} > 1000, movements are logged'.format(num_cars)
-        logging_message = info_message
-        logging.warning(logging_message)
+        
+        info_message = 'Number moves is {0} > 1000, logging them..'.format(len(moves_list))
+        print info_message
         logging.info('Initial car order:')
         logging.info(self.initial_car_order)
         logging.info('Final car order:')
         logging.info(self.final_car_order)
         logging.info('Moves:')
+        for move in moves_list:
+            logging.info(move.__str__())   
+     
+    def print_moves_console(self, moves_list):
+        
+        '''Prints a list of moves
+        Arguments:
+            moves: a list of Movement class instances
+        Returns:
+            None
+        '''
+        
+        print 'Initial car order:', self.initial_car_order
+        print 'Final car order:', self.final_car_order
+        print 'Moves:'
+        
+        for move in moves_list:
+            if self.print_console:
+                print move
+            else:
+                logging.info(move.__str__())
+        print '\n'        
 
     def _move_car_to_empty_slot(self, car_to_move_position):
 
@@ -146,16 +161,10 @@ class RearrangeCars(object):
             car_to_move_position = self.car_position_dict[car_to_move]
             self.not_arranged_cars.difference_update([car_to_move]) # O(1)
 
-
-        movement = Movement(car_to_move, car_to_move_position, self.empty_position)
-        if self.print_console:
-            print movement
-        else:
-            movement.print_log_file()
-
         self._move_car_to_empty_slot(car_to_move_position)
+        return Movement(car_to_move, car_to_move_position, self.empty_position);
 
-    def _reset_variables_to_init_state(self):
+    def _variables_to_init_state(self):
 
         '''Resets variables to the same state when class was initialized
         Needed for running rearrange_all_cars function again
@@ -177,19 +186,21 @@ class RearrangeCars(object):
         Note 2: Possible to run the function many times
 
         '''
-
+        
         if self.initial_car_order == self.final_car_order:
             assert ValueError, 'Cars are already in the final order, no moves are required'
-        elif self.current_car_order == self.final_car_order:
-            self._reset_variables_to_init_state()
-
-        if len(self.not_arranged_cars) > 1000:
-            self._create_log_file()
-            self.print_console = False
-
+        
         '''Final solution is O(n)
         '''
 
+        moves = []
         while self.not_arranged_cars:
-            self._rearrange_one_car() # O(1)
+            moves.append(self._rearrange_one_car()) # O(1)
+        
+        if len(moves) > 1000:
+            self.print_moves_log_file(moves)
+        else:
+            self.print_moves_console(moves)
+            
+        self._variables_to_init_state()    
 
