@@ -16,7 +16,7 @@ class TestRearrangeCars(unittest.TestCase):
         self.final_order = [3, 1, 2, 0]
         self.rc = RearrangeCars(self.init_order, self.final_order)
 
-    def test_rearrange_all_cars(self):
+    def test_rearrange_sample_cars(self):
 
         '''Tests on the toy example without special difficulties
         '''
@@ -24,7 +24,7 @@ class TestRearrangeCars(unittest.TestCase):
         self.rc.rearrange_all_cars()
         self.assertEqual(self.rc.current_car_order, self.final_order)
 
-    def test_rearrange_all_cars_twice(self):
+    def test_rearrange_sample_cars_twice(self):
 
         '''Test whether the class instance can properly handle
         running the same function twice
