@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from RearrangeCarGroup8Movements import RearrangeCars
+from RearrangeCarGroup8 import RearrangeCars
 
 class TestRearrangeCars(unittest.TestCase):
 
