@@ -44,22 +44,32 @@ class MovementPrinter(object):
     Class used to print the list of movements into stdout or log file.
     """
 
-    def __init__(self, init_order, final_order, print_console):
+    def __init__(self, init_order, final_order):
         self.order_message = self._prepare_order_message(init_order, final_order)
-        self.print_console = print_console
 
     def _prepare_order_message(self, initial_car_order, final_car_order):
-        return ('Initial car order: {init_order}'.format(init_order=initial_car_order) +
-                'Final car order: {final_order}'.format(final_order=final_car_order) +
-                'Moves:')
 
-    def print_moves(self, moves):
-        if len(moves) > 1000:
-            self.print_moves_log_file(moves)
+        '''
+        Returns a string containing the initial_car_order and
+        final_car_order, to be used by print_moves
+        '''
+
+        return ('\nInitial car order: {0} \nFinal car order: {1} \nMoves:'.format(
+            initial_car_order, final_car_order))
+
+    def print_moves(self, moves, print_console):
+
+        '''
+        Prints the list of moves to console or a log file
+        depending on the print_console variable and the length of moves
+        '''
+
+        if len(moves) > 1000 or not print_console:
+            self._print_moves_log_file(moves)
         else:
-            self.print_moves_console(moves)
+            self._print_moves_console(moves)
 
-    def print_moves_log_file(self, moves_list):
+    def _print_moves_log_file(self, moves_list):
 
         '''Prints a list of moves to the log file
 
@@ -69,14 +79,15 @@ class MovementPrinter(object):
             None
         '''
 
-        info_message = 'Number moves is {N} > 1000, logging them..'.format(N=len(moves_list))
+        file_name = 'RearrangeCarGroup8.log'
+        info_message = 'Logging results into {}...'.format(file_name)
         print(info_message)
-        logging.basicConfig(filename='RearrangeCarGroup8.log', filemode='w', level=logging.DEBUG)
+        logging.basicConfig(filename=file_name, filemode='w', level=logging.DEBUG)
         logging.info(self.order_message)
         for move in moves_list:
             logging.info(move.__str__())
 
-    def print_moves_console(self, moves_list):
+    def _print_moves_console(self, moves_list):
 
         '''Prints a list of moves
         Arguments:
@@ -86,14 +97,8 @@ class MovementPrinter(object):
         '''
 
         print(self.order_message)
-
         for move in moves_list:
-            if self.print_console:
-                print(move)
-            else:
-                logging.info(move.__str__())
-        print('\n')
-
+            print(move)
 
 class RearrangeCars(object):
     '''Class to rearrange the cars and print the moves
@@ -130,7 +135,7 @@ class RearrangeCars(object):
 
         self.initial_car_order = init_car_order
         self.final_car_order = final_car_order
-        self.printer = MovementPrinter(init_car_order, final_car_order, True)
+        self.printer = MovementPrinter(init_car_order, final_car_order)
         self._variables_to_init_state()
 
     def _move_car_to_empty_slot(self, car_to_move_position):
@@ -194,13 +199,16 @@ class RearrangeCars(object):
                                   if self.initial_car_order[i] != self.final_car_order[i] \
                                   and car}  # time O(n)
 
-    def rearrange_all_cars(self):
+    def rearrange_all_cars(self, print_console=True):
 
         '''Rearranges all cars and prints the moves
         Note 1: In case there are more than 1000 moves to print
         logging into the file is done
         Note 2: Possible to run the function many times
         Final solution is O(n)
+        Note 3: If the length of moves is longer than 1000 steps,
+        results are automatically logged regardless of the value
+        of print_console
         '''
 
         self._variables_to_init_state()
@@ -209,4 +217,4 @@ class RearrangeCars(object):
         while self.not_arranged_cars:
             moves.append(self._rearrange_one_car())  # O(1)
 
-        self.printer.print_moves(moves)
+        self.printer.print_moves(moves, print_console)
