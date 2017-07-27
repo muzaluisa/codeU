@@ -145,15 +145,18 @@ class RearrangeCars(object):
         Arguments:
             car_to_move_position: the position from where the car is moved
         Returns:
-            None
+            The movement required to move car_to_move from car_to_move_position
+            to the empty position
         '''
 
         car_to_move = self.current_car_order[car_to_move_position]
         self.current_car_order[self.car_position_dict[0]] = car_to_move
         self.current_car_order[car_to_move_position] = 0
 
-        self.car_position_dict[car_to_move] = self.car_position_dict[0]
+        car_to_move_destination = self.car_position_dict[0]
+        self.car_position_dict[car_to_move] = car_to_move_destination
         self.car_position_dict[0] = car_to_move_position
+        return Movement(car_to_move, car_to_move_position, car_to_move_destination)
 
     def _get_not_arranged_car_index(self):
 
@@ -174,6 +177,10 @@ class RearrangeCars(object):
         in this case the number of not arranged cars stays the same
 
         Complexity is O(1)
+
+        Returns:
+            The movement required to rearrange one car to the correct
+            position
         '''
 
         if self.final_car_order[self.car_position_dict[0]] == 0:
@@ -184,8 +191,7 @@ class RearrangeCars(object):
             car_to_move_position = self.car_position_dict[car_to_move]
             self.not_arranged_cars.difference_update([car_to_move])  # O(1)
 
-        self._move_car_to_empty_slot(car_to_move_position)
-        return Movement(car_to_move, car_to_move_position, self.car_position_dict[0])
+        return self._move_car_to_empty_slot(car_to_move_position)
 
     def _variables_to_init_state(self):
 
