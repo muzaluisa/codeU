@@ -77,7 +77,8 @@ class TestRearrangeCars(unittest.TestCase):
     def test_long_parking_lot(self):
 
         '''Runs 30 test case with different initial and final orders
-        of length N to check that the final arrangement is correct
+        of length num_spots to check that the final arrangement is correct
+        as well as logging function
         '''
 
         num_spots = 1500
