@@ -14,7 +14,7 @@ class TestRearrangeCars(unittest.TestCase):
         
         self.init_order = [1, 2, 0, 3]
         self.final_order = [3, 1, 2, 0]
-        self.rc = RearrangeCars(self.init_order, self.final_order)
+        self.rc = RearrangeCars(list(self.init_order), list(self.final_order))
 
     def test_empty_parking_lot(self):
 
@@ -43,6 +43,17 @@ class TestRearrangeCars(unittest.TestCase):
 
         self.rc.rearrange_all_cars()
         self.assertEqual(self.rc.current_car_order, self.final_order)
+
+    def test_initial_order_preserved(self):
+
+        '''Tests whether, after having called rearrange_all_cars() once,
+        the field self.initial_car_order is still unchanged
+
+        Note: This test must pass for test_rearrange_sample_cars_twice to
+        be meaningful
+        '''
+        self.rc.rearrange_all_cars()
+        self.assertEqual(self.rc.initial_car_order, self.init_order)
 
     def test_rearrange_sample_cars_twice(self):
 
@@ -91,4 +102,4 @@ class TestRearrangeCars(unittest.TestCase):
             self.assertEqual(rc_long.current_car_order, final_order_long)
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(verbosity=2)
