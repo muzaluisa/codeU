@@ -26,6 +26,15 @@ class TestRearrangeCars(unittest.TestCase):
         rc_empty.rearrange_all_cars()
         self.assertEqual(rc_empty.current_car_order, rc_empty.final_car_order)
 
+    def test_parking_lot_length_one(self):
+
+        '''Test the case when the parking lot is of
+        length one and there is no car placed in it
+        '''
+        rc_length_one = RearrangeCars([0], [0])
+        rc_length_one.rearrange_all_cars()
+        self.assertEqual(rc_length_one.current_car_order, rc_length_one.final_car_order)
+
     def test_rearrange_sample_cars(self):
 
         '''Tests on the toy example without special difficulties
