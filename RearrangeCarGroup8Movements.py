@@ -35,7 +35,7 @@ class Movement(object):
         self.to_index = to_index
 
     def __str__(self):
-        move_str = "Move car #%s from %s to %s" %(self.car, self.from_index, self.to_index)
+        move_str = "Move car #{0} from {1} to {2}".format(self.car, self.from_index, self.to_index)
         return move_str
 
 class RearrangeCars(object):
@@ -45,7 +45,7 @@ class RearrangeCars(object):
        - Stores additionally the position of empty spot in current car arrangement
        self.current_car_order.
        - Moves are either printed to the console or logged
-       - Print moves in O(n), where n is the number of cars. 
+       - Print moves in O(n), where n is the number of cars.
        - More precisely at most n + k moves are taken, where k << n is the amount of movements
        - where car is placed not to the final place
     '''
@@ -80,41 +80,41 @@ class RearrangeCars(object):
     def print_moves_log_file(self, moves_list):
 
         '''Prints a list of moves to the log file
-        
+
         Arguments:
             moves: a list of Movement class instances
         Returns:
             None
         '''
-        
-        info_message = 'Number moves is {0} > 1000, logging them..'.format(len(moves_list))
+
+        info_message = 'Number moves is {N} > 1000, logging them..'.format(N=len(moves_list))
         print info_message
-        logging.basicConfig(filename='RearrangeCarGroup8.log', filemode='w', level=logging.DEBUG)
-        logging.info('Initial car order:', self.initial_car_order)
-        logging.info('Final car order:', self.final_car_order)
+        logging.basicConfig(filename='RearrangeCarGroup8.log', filemode ='w', level=logging.DEBUG)
+        logging.info('Initial car order: {init_order}'.format(init_order=self.initial_car_order))
+        logging.info('Final car order: {final_order}'.format(final_order=self.final_car_order))
         logging.info('Moves:')
         for move in moves_list:
-            logging.info(move.__str__())   
-     
+            logging.info(move.__str__())
+
     def print_moves_console(self, moves_list):
-        
+
         '''Prints a list of moves
         Arguments:
             moves: a list of Movement class instances
         Returns:
             None
         '''
-        
-        print 'Initial car order:', self.initial_car_order
-        print 'Final car order:', self.final_car_order
-        print 'Moves:'
-        
+
+        print 'Initial car order: {init_order}'.format(init_order=self.initial_car_order)
+        print 'Final car order: {final_order}'.format(final_order=self.final_car_order)
+        print 'Moves: '
+
         for move in moves_list:
             if self.print_console:
                 print move
             else:
                 logging.info(move.__str__())
-        print '\n'        
+        print '\n'
 
     def _move_car_to_empty_slot(self, car_to_move_position):
 
@@ -162,7 +162,7 @@ class RearrangeCars(object):
             self.not_arranged_cars.difference_update([car_to_move]) # O(1)
 
         self._move_car_to_empty_slot(car_to_move_position)
-        return Movement(car_to_move, car_to_move_position, self.empty_position);
+        return Movement(car_to_move, car_to_move_position, self.empty_position)
 
     def _variables_to_init_state(self):
 
@@ -184,23 +184,16 @@ class RearrangeCars(object):
         Note 1: In case there are more than 1000 moves to print
         logging into the file is done
         Note 2: Possible to run the function many times
-
+        Final solution is O(n)
         '''
         
-        if self.initial_car_order == self.final_car_order:
-            assert ValueError, 'Cars are already in the final order, no moves are required'
+        self._variables_to_init_state()
         
-        '''Final solution is O(n)
-        '''
-
         moves = []
         while self.not_arranged_cars:
             moves.append(self._rearrange_one_car()) # O(1)
-        
+
         if len(moves) > 1000:
             self.print_moves_log_file(moves)
         else:
             self.print_moves_console(moves)
-            
-        self._variables_to_init_state()    
-
