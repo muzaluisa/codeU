@@ -12,9 +12,9 @@ class TestRearrangeCars(unittest.TestCase):
         '''Basic setting that will be used in several tests
         '''
         
-        self.init_order = [1, 2, 0, 3]
-        self.final_order = [3, 1, 2, 0]
-        self.rc = RearrangeCars(list(self.init_order), list(self.final_order))
+        self.initial_car_order = [1, 2, 0, 3]
+        self.final_car_order = [3, 1, 2, 0]
+        self.rc = RearrangeCars(list(self.initial_car_order), list(self.final_car_order))
 
     def test_empty_parking_lot(self):
 
@@ -42,7 +42,7 @@ class TestRearrangeCars(unittest.TestCase):
         '''
 
         self.rc.rearrange_all_cars()
-        self.assertEqual(self.rc.current_car_order, self.final_order)
+        self.assertEqual(self.rc.current_car_order, self.final_car_order)
 
     def test_initial_order_preserved(self):
 
@@ -53,7 +53,7 @@ class TestRearrangeCars(unittest.TestCase):
         be meaningful
         '''
         self.rc.rearrange_all_cars()
-        self.assertEqual(self.rc.initial_car_order, self.init_order)
+        self.assertEqual(self.rc.initial_car_order, self.initial_car_order)
 
     def test_rearrange_sample_cars_twice(self):
 
@@ -62,18 +62,18 @@ class TestRearrangeCars(unittest.TestCase):
         '''
 
         self.rc.rearrange_all_cars()
-        self.assertEqual(self.rc.current_car_order, self.final_order)
+        self.assertEqual(self.rc.current_car_order, self.final_car_order)
         self.rc.rearrange_all_cars()
-        self.assertEqual(self.rc.current_car_order, self.final_order)
+        self.assertEqual(self.rc.current_car_order, self.final_car_order)
 
     def test_already_proper_order(self):
 
         '''Tests the case when initial and final orders are the same
         '''
 
-        rc_same = RearrangeCars(self.final_order, self.final_order)
+        rc_same = RearrangeCars(self.final_car_order, self.final_car_order)
         rc_same.rearrange_all_cars()
-        self.assertEqual(rc_same.current_car_order, self.final_order)
+        self.assertEqual(rc_same.current_car_order, self.final_car_order)
 
     def test_same_empty_position(self):
 
@@ -82,7 +82,7 @@ class TestRearrangeCars(unittest.TestCase):
         '''
 
         final_order_same_empty = [3, 1, 0, 2]
-        rc_same_empty_pos = RearrangeCars(self.init_order, final_order_same_empty)
+        rc_same_empty_pos = RearrangeCars(self.initial_car_order, final_order_same_empty)
         rc_same_empty_pos.rearrange_all_cars()
         self.assertEqual(rc_same_empty_pos.current_car_order, final_order_same_empty)
 
@@ -94,7 +94,7 @@ class TestRearrangeCars(unittest.TestCase):
         '''
 
         final_car_order_different_length = [0, 1, 2, 3, 4]
-        rc_parking_lot_different_length = RearrangeCars(self.init_order,
+        rc_parking_lot_different_length = RearrangeCars(self.initial_car_order,
                                                         final_car_order_different_length)
         with self.assertRaises(ValueError):
             rc_parking_lot_different_length.rearrange_all_cars()
