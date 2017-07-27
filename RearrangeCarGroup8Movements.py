@@ -192,14 +192,14 @@ class RearrangeCars(object):
         Needed for running rearrange_all_cars function again
         '''
 
-        self.current_car_order = self.initial_car_order
+        self.current_car_order = list(self.initial_car_order)
         self.car_position_dict = {car: pos for pos, car in \
                                   enumerate(self.initial_car_order)}  # time O(n)
         self.not_arranged_cars = {car for i, car in enumerate(self.initial_car_order) \
                                   if self.initial_car_order[i] != self.final_car_order[i] \
                                   and car}  # time O(n)
 
-    def rearrange_all_cars(self, print_console=True):
+    def rearrange_all_cars(self, print_console=False):
 
         '''Rearranges all cars and prints the moves
         Note 1: In case there are more than 1000 moves to print
