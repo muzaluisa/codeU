@@ -19,8 +19,9 @@ Task: to rearrange the cars in a given way
 and print a series of moves from position x to y
 
 For our example, the series of moves should be e.g.:
-    move 1 to 2
-    move 3 to 0
+    move car #2 from 1 to 2 (Results in [1, 0, 2, 3])
+    move car #1 from 0 to 1 (Results in [0, 1, 2, 3])
+    move car #3 from 3 to 0 (Results in [3, 1, 2, 0])
 '''
 
 
@@ -108,7 +109,7 @@ class RearrangeCars(object):
        - Moves are either printed to the console or logged
        - Print moves in O(n), where n is the number of cars.
        - More precisely at most n + k moves are taken, where k << n is the amount of movements
-       - where car is placed not to the final place
+       where car is placed not originall at the final place
     '''
 
     def __init__(self, init_car_order, final_car_order):
@@ -119,7 +120,7 @@ class RearrangeCars(object):
         not arranged cars
 
         Storing car_position_dict helps to search indices of car in O(1) instead of O(n)
-        A set of not_arranged_cars helps to now when to stop in O(1) as well as to draw
+        A set of not_arranged_cars helps to know when to stop in O(1) as well as to draw
         in O(1) unarranged car
 
         Arguments:
@@ -199,6 +200,16 @@ class RearrangeCars(object):
                                   if self.initial_car_order[i] != self.final_car_order[i] \
                                   and car}  # time O(n)
 
+    def _check_same_parking_lot(self):
+
+        '''Compare the length of self.initial_car_order and self.final_car_order
+        and raises a value error if they are of different length
+        '''
+
+        if len(self.initial_car_order) != len(self.final_car_order):
+            raise ValueError('There is a mismatch in the size of the parking lot, ' +
+                             'please check them again!')
+
     def rearrange_all_cars(self, print_console=False):
 
         '''Rearranges all cars and prints the moves
@@ -212,6 +223,7 @@ class RearrangeCars(object):
         '''
 
         self._variables_to_init_state()
+        self._check_same_parking_lot()
 
         moves = []
         while self.not_arranged_cars:

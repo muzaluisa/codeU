@@ -86,6 +86,19 @@ class TestRearrangeCars(unittest.TestCase):
         rc_same_empty_pos.rearrange_all_cars()
         self.assertEqual(rc_same_empty_pos.current_car_order, final_order_same_empty)
 
+    def test_parking_lot_different_length_value_error(self):
+
+        '''Tests the case when initial_car_order and final_car_order
+        given are of different length
+        A ValueError shall raise
+        '''
+
+        final_car_order_different_length = [0, 1, 2, 3, 4]
+        rc_parking_lot_different_length = RearrangeCars(self.init_order,
+                                                        final_car_order_different_length)
+        with self.assertRaises(ValueError):
+            rc_parking_lot_different_length.rearrange_all_cars()
+
     def test_long_parking_lot(self):
 
         '''Runs 30 test case with different initial and final orders
