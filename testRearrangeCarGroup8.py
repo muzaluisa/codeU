@@ -41,7 +41,8 @@ class TestRearrangeCars(unittest.TestCase):
         '''
 
         rc_same = RearrangeCars(self.final_order, self.final_order)
-        self.assertRaises(rc_same.rearrange_all_cars())
+        rc_same.rearrange_all_cars()
+        self.assertEqual(rc_same.current_car_order, self.final_order)
 
     def test_same_empty_position(self):
 
