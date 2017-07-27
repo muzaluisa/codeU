@@ -126,11 +126,11 @@ class RearrangeCars(object):
         '''
 
         car_to_move = self.current_car_order[car_to_move_position]
-        self.current_car_order[self.empty_position] = car_to_move
+        self.current_car_order[self.car_position_dict[0]] = car_to_move
         self.current_car_order[car_to_move_position] = 0
 
-        self.car_position_dict[car_to_move] = self.empty_position
-        self.empty_position = car_to_move_position
+        self.car_position_dict[car_to_move] = self.car_position_dict[0]
+        self.car_position_dict[0] = car_to_move_position
 
     def _get_not_arranged_car_index(self):
 
@@ -153,16 +153,16 @@ class RearrangeCars(object):
         Complexity is O(1)
         '''
 
-        if self.final_car_order[self.empty_position] == 0:
+        if self.final_car_order[self.car_position_dict[0]] == 0:
             car_to_move_position = self._get_not_arranged_car_index()
             car_to_move = self.current_car_order[car_to_move_position]
         else:
-            car_to_move = self.final_car_order[self.empty_position]
+            car_to_move = self.final_car_order[self.car_position_dict[0]]
             car_to_move_position = self.car_position_dict[car_to_move]
             self.not_arranged_cars.difference_update([car_to_move]) # O(1)
 
         self._move_car_to_empty_slot(car_to_move_position)
-        return Movement(car_to_move, car_to_move_position, self.empty_position)
+        return Movement(car_to_move, car_to_move_position, self.car_position_dict[0])
 
     def _variables_to_init_state(self):
 
@@ -171,9 +171,8 @@ class RearrangeCars(object):
         '''
 
         self.current_car_order = self.initial_car_order
-        self.empty_position = self.current_car_order.index(0)
         self.car_position_dict = {car:pos for pos, car in \
-                                  enumerate(self.initial_car_order) if car} # time O(n)
+                                  enumerate(self.initial_car_order)} # time O(n)
         self.not_arranged_cars = {car for i, car in enumerate(self.initial_car_order)\
                                   if self.initial_car_order[i] != self.final_car_order[i]\
                                   and car} # time O(n)
