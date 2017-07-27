@@ -16,6 +16,16 @@ class TestRearrangeCars(unittest.TestCase):
         self.final_order = [3, 1, 2, 0]
         self.rc = RearrangeCars(self.init_order, self.final_order)
 
+    def test_empty_parking_lot(self):
+
+        '''Test the case when the parking lot is empty,
+        should work without raising an error
+        '''
+
+        rc_empty = RearrangeCars(list(), list())
+        rc_empty.rearrange_all_cars()
+        self.assertEqual(rc_empty.current_car_order, rc_empty.final_car_order)
+
     def test_rearrange_sample_cars(self):
 
         '''Tests on the toy example without special difficulties
