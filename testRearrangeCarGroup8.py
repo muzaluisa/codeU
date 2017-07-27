@@ -1,4 +1,3 @@
-import logging
 import unittest
 import numpy as np
 from RearrangeCarGroup8Movements import RearrangeCars
@@ -12,6 +11,7 @@ class TestRearrangeCars(unittest.TestCase):
 
         '''Basic setting that will be used in several tests
         '''
+        
         self.init_order = [1, 2, 0, 3]
         self.final_order = [3, 1, 2, 0]
         self.rc = RearrangeCars(self.init_order, self.final_order)
@@ -21,7 +21,7 @@ class TestRearrangeCars(unittest.TestCase):
         '''Test the case when the parking lot is empty,
         should work without raising an error
         '''
-
+        
         rc_empty = RearrangeCars(list(), list())
         rc_empty.rearrange_all_cars()
         self.assertEqual(rc_empty.current_car_order, rc_empty.final_car_order)
@@ -31,6 +31,7 @@ class TestRearrangeCars(unittest.TestCase):
         '''Test the case when the parking lot is of
         length one and there is no car placed in it
         '''
+        
         rc_length_one = RearrangeCars([0], [0])
         rc_length_one.rearrange_all_cars()
         self.assertEqual(rc_length_one.current_car_order, rc_length_one.final_car_order)
